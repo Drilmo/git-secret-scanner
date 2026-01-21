@@ -736,7 +736,13 @@ func (m Model) viewCleanResults() string {
 				if result.Source != "current" {
 					sb.WriteString(fmt.Sprintf("%s %s\n", keyStyle.Render("Tool:"), result.Tool))
 				}
-				sb.WriteString(fmt.Sprintf("%s %d\n", keyStyle.Render("Secrets removed:"), result.SecretsRemoved))
+
+				// Show secrets info with appropriate label
+				if result.Source == "current" && result.FilesModified == 0 {
+					sb.WriteString(fmt.Sprintf("%s %d (not found in current files)\n", keyStyle.Render("Secrets to clean:"), result.SecretsRemoved))
+				} else {
+					sb.WriteString(fmt.Sprintf("%s %d\n", keyStyle.Render("Secrets cleaned:"), result.SecretsRemoved))
+				}
 
 				if result.Source == "current" || result.Source == "both" {
 					sb.WriteString(fmt.Sprintf("%s %d\n", keyStyle.Render("Files modified:"), result.FilesModified))
@@ -749,18 +755,36 @@ func (m Model) viewCleanResults() string {
 					sb.WriteString(fmt.Sprintf("%s %s\n", keyStyle.Render("Backup branch:"), result.BackupBranch))
 				}
 
-				// Show appropriate next steps based on source
+				// Show appropriate next steps based on source and actual changes
 				sb.WriteString("\n" + warningStyle.Render("⚠️  Next steps:") + "\n")
 				if result.Source == "current" {
-					sb.WriteString("  1. Review changes: git diff\n")
-					sb.WriteString("  2. Commit if satisfied: git add -A && git commit -m 'Remove secrets'\n")
-					sb.WriteString("  3. Rotate all exposed credentials\n")
-				} else {
-					sb.WriteString("  1. Verify the cleaning: git log -p -S 'old_secret'\n")
+					if result.FilesModified > 0 {
+						sb.WriteString("  1. Review changes: git diff\n")
+						sb.WriteString("  2. Commit: git add -A && git commit -m 'Remove secrets'\n")
+						sb.WriteString("  3. Push: git push\n")
+						sb.WriteString("  4. Rotate all exposed credentials\n")
+					} else {
+						sb.WriteString("  ℹ️  No current files were modified.\n")
+						sb.WriteString("     Secrets may only exist in git history.\n")
+						sb.WriteString("     → Run Clean again with 'Source: History' or 'Both'\n")
+						sb.WriteString("  1. Rotate all exposed credentials\n")
+					}
+				} else if result.Source == "history" {
+					sb.WriteString("  1. Verify: git log -p -S 'secret_value'\n")
 					sb.WriteString("  2. Force push: git push --force --all\n")
 					sb.WriteString("  3. Force push tags: git push --force --tags\n")
-					sb.WriteString("  4. All collaborators must re-clone\n")
+					sb.WriteString("  4. Notify collaborators to re-clone\n")
 					sb.WriteString("  5. Rotate all exposed credentials\n")
+				} else {
+					// both
+					if result.FilesModified > 0 {
+						sb.WriteString("  1. Review current file changes: git diff\n")
+						sb.WriteString("  2. Commit current changes: git add -A && git commit -m 'Remove secrets'\n")
+					}
+					sb.WriteString("  3. Force push: git push --force --all\n")
+					sb.WriteString("  4. Force push tags: git push --force --tags\n")
+					sb.WriteString("  5. Notify collaborators to re-clone\n")
+					sb.WriteString("  6. Rotate all exposed credentials\n")
 				}
 			}
 		} else {
