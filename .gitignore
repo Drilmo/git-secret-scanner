@@ -1,0 +1,17 @@
+# Node.js (legacy)
+node_modules/
+
+# Go binaries
+bin/
+/gitsecret
+
+# Output files
+*.log
+secrets.json
+secrets.jsonl
+*.jsonl
+output/
+
+# OS
+.DS_Store
+patterns.json

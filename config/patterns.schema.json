@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Git Secret Scanner Patterns Configuration",
+  "type": "object",
+  "properties": {
+    "keywords": {
+      "type": "array",
+      "description": "Liste des mots-clés à rechercher",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nom du groupe de patterns"
+          },
+          "patterns": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Liste des patterns à rechercher"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description du type de secret"
+          }
+        },
+        "required": ["name", "patterns"]
+      }
+    },
+    "ignoredValues": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Valeurs à ignorer (placeholders, etc.)"
+    },
+    "ignoredFiles": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Patterns de fichiers à ignorer"
+    },
+    "excludeBinaryExtensions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Extensions de fichiers binaires à exclure"
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "minSecretLength": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Longueur minimale d'un secret"
+        },
+        "maxSecretLength": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Longueur maximale d'un secret"
+        },
+        "caseSensitive": {
+          "type": "boolean",
+          "description": "Recherche sensible à la casse"
+        }
+      }
+    }
+  }
+}

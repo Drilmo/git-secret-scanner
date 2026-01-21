@@ -1,0 +1,163 @@
+{
+  "$schema": "./patterns.schema.json",
+  "_comment": "Fichier de configuration des patterns de recherche de secrets",
+  "_usage": "Copiez ce fichier vers 'patterns.json' et personnalisez-le",
+
+  "extractionPatterns": [
+    {
+      "name": "key_equals_value",
+      "pattern": "^\\s*([a-zA-Z_][\\w.$/-]*)\\s*=\\s*(.+)$",
+      "valueGroup": 2,
+      "description": "Format standard key=value (supporte les clés avec /, $, .)"
+    },
+    {
+      "name": "yaml_colon",
+      "pattern": "^\\s*([a-zA-Z_][\\w._-]*)\\s*:\\s+['\"]?([^'\"\\n=]+)['\"]?\\s*$",
+      "valueGroup": 2,
+      "description": "Format YAML key: value"
+    },
+    {
+      "name": "json_quoted",
+      "pattern": "\"([a-zA-Z_][\\w._]*)\"\\s*:\\s*\"([^\"]+)\"",
+      "valueGroup": 2,
+      "description": "Format JSON \"key\": \"value\""
+    },
+    {
+      "name": "export_env",
+      "pattern": "^\\s*export\\s+([A-Z_][A-Z0-9_]*)\\s*=\\s*['\"]?([^'\"\\n]+)['\"]?",
+      "valueGroup": 2,
+      "description": "Format shell export KEY=value"
+    }
+  ],
+
+  "keywords": [
+    {
+      "name": "***REMOVED***",
+      "patterns": ["***REMOVED***", "passwd", "pwd"],
+      "description": "Mots de passe"
+    },
+    {
+      "name": "secret",
+      "patterns": ["secret", "client_secret", "client.secret", "app_secret"],
+      "description": "Secrets d'application"
+    },
+    {
+      "name": "api_key",
+      "patterns": ["api_key", "apikey", "api.key", "api-key"],
+      "description": "Clés d'API"
+    },
+    {
+      "name": "token",
+      "patterns": ["token", "access_token", "auth_token", "bearer_token", "refresh_token"],
+      "description": "Tokens d'authentification"
+    },
+    {
+      "name": "private_key",
+      "patterns": ["private_key", "privatekey", "private.key"],
+      "description": "Clés privées"
+    },
+    {
+      "name": "credentials",
+      "patterns": ["credentials", "credential"],
+      "description": "Identifiants"
+    },
+    {
+      "name": "connection_string",
+      "patterns": ["connection_string", "connectionstring", "conn_str"],
+      "description": "Chaînes de connexion"
+    },
+    {
+      "name": "database",
+      "patterns": ["db_***REMOVED***", "db_pass", "database_***REMOVED***", "mysql_pwd", "postgres_***REMOVED***"],
+      "description": "Mots de passe de base de données"
+    },
+    {
+      "name": "encryption",
+      "patterns": ["encryption_key", "encrypt_key", "aes_key", "signing_key"],
+      "description": "Clés de chiffrement"
+    },
+    {
+      "name": "oauth",
+      "patterns": ["oauth_secret", "oauth_token", "client_id"],
+      "description": "OAuth credentials"
+    }
+  ],
+
+  "ignoredValues": [
+    "<empty>",
+    "null",
+    "undefined",
+    "none",
+    "N/A",
+    "${",
+    "{{",
+    "CHANGE_ME",
+    "YOUR_",
+    "xxx",
+    "***",
+    "PLACEHOLDER",
+    "TODO",
+    "FIXME",
+    "example",
+    "test",
+    "dummy",
+    "fake",
+    "sample"
+  ],
+
+  "ignoredFiles": [
+    "*.md",
+    "*.txt",
+    "*.lock",
+    "package-lock.json",
+    "yarn.lock",
+    "*.min.js",
+    "*.min.css",
+    "node_modules/**",
+    "vendor/**",
+    ".git/**"
+  ],
+
+  "excludeBinaryExtensions": [
+    ".jar",
+    ".war",
+    ".ear",
+    ".zip",
+    ".tar",
+    ".gz",
+    ".7z",
+    ".rar",
+    ".bin",
+    ".exe",
+    ".dll",
+    ".so",
+    ".dylib",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".ico",
+    ".svg",
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".ppt",
+    ".pptx",
+    ".mp3",
+    ".mp4",
+    ".avi",
+    ".mov",
+    ".ttf",
+    ".woff",
+    ".woff2",
+    ".eot"
+  ],
+
+  "settings": {
+    "minSecretLength": 3,
+    "maxSecretLength": 500,
+    "caseSensitive": false
+  }
+}
